@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:STNMI"
         mc:Ignorable="d"
-        Title="Eclipium STNMI" Height="700" Width="1200" WindowStyle="None" Background="Transparent" AllowsTransparency="True" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="/eclipium.ico">
+        Title="Eclipium STNMI" Height="700" Width="1200" WindowStyle="None" Background="Transparent" AllowsTransparency="True" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <Border Background="#151515" BorderThickness="10" BorderBrush="Transparent" CornerRadius="20">
             <Grid>
@@ -30,7 +30,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Image Source="/eclipium.ico" Height="50" Width="50" Margin="10,10,1120,620" />
+                <Image Source="/STNMI.ico" Height="50" Width="50" Margin="23,11,1107,619" />
                 <Label Foreground="White" Content="Eclipium STNMI" VerticalContentAlignment="Center" FontSize="25" FontWeight="Bold" Margin="65,10,47,619"  />
                 <Image x:Name="Logo"  Height="120" Width="120" Margin="75,116,585,194" />
                 <Button Content="–" Click="Button_Click_1" HorizontalAlignment="Left" Margin="1096,10,0,0" VerticalAlignment="Top" Height="30" Width="30" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
