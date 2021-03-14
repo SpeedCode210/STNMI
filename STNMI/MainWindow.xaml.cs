@@ -17,16 +17,16 @@ namespace STNMI
         {
             new("Piano",1),
             new("Violon",1),
-            new("Alto",1),
-            new("Violoncelle",1),
-            new("Contrebasse",2),
+            new("Alto",1,"alto"),
+            new("Violoncelle",1,"bass"),
+            new("Contrebasse",2,"bass"),
             new("Contrebasson",2),
             new("Guitare",2),
             new("Flûte à bec",0.5),
             new("Flûte traversière",1),
             new("Flûte piccolo",0.5),
             new("Trombone",1),
-            new("Hautbois",1),
+            new("Hautbois",2),
             new("Harpe",1),
             new("Clarinette en Sib",1.1224620248),
             new("Clarinette en La",1.189207115),
@@ -34,9 +34,15 @@ namespace STNMI
 
 
         };
+
+
         private bool effacer = false;
 
+        private string score = "";
+
         public static Instrument currentInstrument;
+
+        public static Gamme currentGamme;
 
         public MainWindow()
         {
@@ -45,6 +51,10 @@ namespace STNMI
             currentInstrument = instruments[0];
             instrums.SelectedIndex = 0;
             instrums.SelectionChanged += Instrums_SelectionChanged;
+            gamms.ItemsSource = Gammes.gammes;
+            currentGamme = Gammes.gammes[0];
+            gamms.SelectedIndex = 0;
+            gamms.SelectionChanged += Gamms_SelectionChanged;
             micro.ItemsSource = Sound.GetDevices();
             micro.SelectedIndex = 0;
             try
@@ -54,12 +64,21 @@ namespace STNMI
             catch{}
         }
 
+        private void Gamms_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            currentGamme = Gammes.gammes[gamms.SelectedIndex];
+            Debug.WriteLine(currentGamme.Name);
+            entry.Text = currentGamme.Convert(score);
+            if (titre != null && auteur != null && currentInstrument != null)
+                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:"+currentGamme.Key+" clef=" + currentInstrument.Clef + "\n";
+        }
+
         private void Instrums_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             currentInstrument = instruments[instrums.SelectedIndex];
             Debug.WriteLine(currentInstrument.Name);
-            if (titre != null && auteur != null)
-                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:C clef=treble\n";
+            if (titre != null && auteur != null && currentInstrument != null)
+                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -76,6 +95,7 @@ namespace STNMI
         {
             if (effacer)
             {
+                score = "";
                 entry.Clear();
                 effacer = !effacer;
             }
@@ -90,13 +110,15 @@ namespace STNMI
         int index2=1;
         public void Write(string a)
         {
-            if (index2 <= 30)
+            if (index2 <= 24)
                 index2++;
             else
                 index2 = 1;
             if (index2 == 28)
                 a = a + "\n";
-            entry.Text = entry.Text + a;
+            score = score + a;
+            entry.Text = currentGamme.Convert(score);
+            //entry.Text = entry.Text + a;
             SaveFile(entry.Text);
         }
 
@@ -163,8 +185,8 @@ namespace STNMI
 
         private void titre_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if(titre != null && auteur != null)
-            enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:C clef=treble\n";
+            if(titre != null && auteur != null && currentInstrument != null)
+                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n";
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)

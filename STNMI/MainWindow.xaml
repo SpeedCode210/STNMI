@@ -58,6 +58,7 @@
                 <Label Foreground="White" Content="Titre" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,66,1020,578"  />
                 <Label Foreground="White" Content="Instrument&#xD;&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,143,972,501"  />
                 <Label Foreground="White" Content="Microphone&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,179,972,465"  />
+                <Label Foreground="White" Content="Gamme&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,213,972,431"  />
             </Grid>
         </Border>
         <TextBox Margin="26,350,677,35" Name="entry" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -133,5 +134,6 @@
             </Button.Style>
         </Button>
         <ComboBox x:Name="micro" Margin="153,198,760,476"/>
+        <ComboBox x:Name="gamms" Margin="153,229,760,445"/>
     </Grid>
 </Window>
