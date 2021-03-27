@@ -4,8 +4,8 @@ namespace STNMI
 {
     public class Gamme
     {
-        public string Name { get; private set; }
-        public string Key { get; private set; }
+        public string Name { get; protected set; }
+        public string Key { get; protected set; }
         public Dictionary<string, string> Notes {get;set;}
 
         public Gamme(string name,string key)
@@ -14,7 +14,7 @@ namespace STNMI
             Key = key;
         }
 
-        public string Convert(string s)
+        public virtual string Convert(string s)
         {
             var str = s;
             foreach(var a in Notes)

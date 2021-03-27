@@ -104,7 +104,12 @@ namespace Guitar_Tuner
                             App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (SendOrPostCallback)delegate
                             {
                                 MainWindow wind = App.Current.MainWindow as MainWindow;
-
+                                try {
+                                    var d = Converter.ConvertBase(freq * MainWindow.currentInstrument.Coeff);
+                                GammeAutomatique.NbNotes[d]++;
+                                }
+                                catch (KeyNotFoundException e)
+                                {}
                                 wind.Write(a);
                                 b = 0;
                                 a = c;

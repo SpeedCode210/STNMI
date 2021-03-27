@@ -54,18 +54,40 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Label Foreground="White" Content="Auteur" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,102,972,542"  />
-                <Label Foreground="White" Content="Titre" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,66,1020,578"  />
-                <Label Foreground="White" Content="Instrument&#xD;&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,143,972,501"  />
-                <Label Foreground="White" Content="Microphone&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,179,972,465"  />
-                <Label Foreground="White" Content="Gamme&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,213,972,431"  />
+                <Label Foreground="White" Content="Auteur" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,86,972,558"  />
+                <Label Foreground="White" Content="Titre" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="15,55,1015,589"  />
+                <Label Foreground="White" Content="Instrument&#xD;&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,117,972,527"  />
+                <Label Foreground="White" Content="Microphone&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,148,972,496"  />
+                <Label Foreground="White" Content="Gamme&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,179,972,465"  />
+                <Button Content="?&#xD;" Click="Button_Click_5" HorizontalAlignment="Left" Margin="0,650,0,0" VerticalAlignment="Top" Height="30" Width="30" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="#151515"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FF353535"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Label Foreground="White" Content="Sortie MIDI&#xA;" VerticalContentAlignment="Center" FontSize="20" FontWeight="Bold" Margin="10,210,972,434"  />
             </Grid>
         </Border>
         <TextBox Margin="26,350,677,35" Name="entry" TextWrapping="Wrap" AcceptsReturn="True"/>
-        <Button Content="⏺️" Click="Button_Click_2" HorizontalAlignment="Left" Margin="26,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
+        <Button Content="⏺️" Name="Start" Click="Button_Click_2" HorizontalAlignment="Left" Margin="26,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="Green"/>
+                    <Setter Property="Background" Value="#FF00993E"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Button}">
@@ -83,10 +105,31 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="⏹️" Click="Button_Click_3" HorizontalAlignment="Left" Margin="120,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
+        <Button Content="⏹️" IsEnabled="False" Name="Stop" Click="Button_Click_3" HorizontalAlignment="Left" Margin="120,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Background" Value="#FF9E0000"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FF353535"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Content="💾" IsEnabled="True" Name="Enregistrer" Click="Enregistrer_Click" HorizontalAlignment="Left" Margin="167,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FF003F7E"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Button}">
@@ -109,13 +152,13 @@
             <Image Name="img" Stretch="Uniform" Height="2447" Width="606" VerticalAlignment="Top">
             </Image>
         </ScrollViewer>
-        <TextBox Margin="153,83,760,591" Name="titre" Text="Titre" FontSize="16" TextAlignment="Center" TextChanged="titre_TextChanged"/>
-        <TextBox Margin="153,120,760,554" Name="auteur" Text="Auteur" FontSize="16" TextAlignment="Center" TextChanged="titre_TextChanged"/>
-        <ComboBox Name="instrums" Margin="153,159,760,515"/>
-        <Button Content="⏸" Click="Button_Click_4" HorizontalAlignment="Left" Margin="73,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
+        <TextBox Margin="153,70,760,604" Name="titre" Text="Titre" FontSize="16" TextAlignment="Center" TextChanged="titre_TextChanged"/>
+        <TextBox Margin="153,101,760,573" Name="auteur" Text="Auteur" FontSize="16" TextAlignment="Center" TextChanged="titre_TextChanged"/>
+        <ComboBox Name="instrums" Margin="153,132,760,542"/>
+        <Button Content="⏸" Name="Pause" Click="Button_Click_4" HorizontalAlignment="Left" Margin="73,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="Blue"/>
+                    <Setter Property="Background" Value="#FF008795"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Button}">
@@ -133,7 +176,29 @@
                 </Style>
             </Button.Style>
         </Button>
-        <ComboBox x:Name="micro" Margin="153,198,760,476"/>
-        <ComboBox x:Name="gamms" Margin="153,229,760,445"/>
+        <ComboBox x:Name="micro" Margin="153,163,760,511"/>
+        <ComboBox x:Name="gamms" Margin="153,194,760,480"/>
+        <Button Content="🔊" IsEnabled="True" x:Name="PlayMIDI" Click="PlayMIDI_Click" HorizontalAlignment="Left" Margin="214,303,0,0" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" BorderBrush="{x:Null}"  Foreground="White" OpacityMask="#FF464646">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FF5609A2"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FF353535"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <ComboBox x:Name="midiSorts" Margin="153,225,760,449"/>
     </Grid>
 </Window>

@@ -18,10 +18,16 @@
 
   <ItemGroup>
     <None Remove="eclipium.ico" />
+    <None Remove="EclipiumLogoFluentWithText.png" />
     <None Remove="STNMI.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="EclipiumLogoFluentWithText.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Melanchall.DryWetMidi" Version="5.2.0" />
     <PackageReference Include="NAudio" Version="2.0.0" />
   </ItemGroup>
 
@@ -31,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="abc2midi.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="abcm2ps.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -79,5 +79,43 @@ namespace FrequencyToNoteConverter
                 return "z";
         }
 
+        public static string ConvertBase(double frequency)
+        {
+            if (frequency != 0)
+            {
+                // Trouver octave de la note (0 à 8) 
+                int frequencyOctave = -1;
+                foreach (var octave in octaves)
+                {
+                    if (octave.CompareFrequency(frequency))
+                    {
+                        frequencyOctave = octave.OctaveNum;
+                        break;
+                    }
+                }
+
+
+
+                // Trouver nom de la note
+                string noteName = "";
+                double baseFrenquency = frequency / Math.Pow(2, frequencyOctave);
+                foreach (var note in notes)
+                {
+                    if (note.CompareFrequency(baseFrenquency))
+                    {
+                        noteName = note.Name;
+                        break;
+                    }
+                }
+
+                string fullName = "";
+                fullName = noteName.Replace(" ","");
+                
+                return fullName;
+            }
+            else
+                return "z";
+        }
+
     }
 }

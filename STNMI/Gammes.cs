@@ -3,7 +3,8 @@
     public static class Gammes
     {
         public static Gamme[] gammes = new Gamme[]
-{
+        {
+            new GammeAutomatique("Détection automatique"),
             new("Do majeur/La mineur", "C")
             {
                 Notes = new()
