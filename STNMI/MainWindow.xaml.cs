@@ -74,7 +74,7 @@ namespace STNMI
             {
                 Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "temp");
             }
-            catch{}
+            catch { }
         }
 
         private void MidiSorts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -89,7 +89,7 @@ namespace STNMI
             Debug.WriteLine(currentGamme.Name);
             entry.Text = currentGamme.Convert(score);
             if (titre != null && auteur != null && currentInstrument != null)
-                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:"+currentGamme.Key+" clef=" + currentInstrument.Clef + "\n%%MIDI program "+currentInstrument.MIDI+" n\n";
+                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
         }
 
         private void Instrums_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -128,7 +128,7 @@ namespace STNMI
             });
         }
 
-        int index2=1;
+        int index2 = 1;
         public void Write(string a)
         {
             if (titre != null && auteur != null && currentInstrument != null)
@@ -152,7 +152,7 @@ namespace STNMI
             try
             {
                 sound.isActive = false;
-                SaveFile(entry.Text,true);
+                SaveFile(entry.Text, true);
                 effacer = true;
                 Gammes.gammes[0] = new GammeAutomatique("Détection automatique");
             }
@@ -163,50 +163,31 @@ namespace STNMI
         }
         int index = 1;
         int index3 = 1;
-        private async void SaveFile(string s,bool b = false)
+        private async void SaveFile(string s, bool b = false)
         {
             index3++;
-            if(index3 % 2 == 0 || b) {
+            if (index3 % 2 == 0 || b)
+            {
                 var i = index;
                 if (i < 20)
                     index++;
                 else
                     index = 1;
                 i = index;
-                await File.WriteAllTextAsync("temp\\text.abc", enTete+s);
-                BitmapImage bitmap = new();
-                await Task.Run(() =>
-                {
-                    ExecuteCommandSync("abcm2ps -g temp\\text.abc");
-                    string cmd = AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape -p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + AppDomain.CurrentDomain.BaseDirectory + "temp\\Out" + i + ".png --export-dpi=120";
-                    ExecuteCommandSync(cmd);
-                });
+                await File.WriteAllTextAsync("temp\\text.abc", enTete + s);
+                await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g temp\\text.abc", 5000);
+                var proc = await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + AppDomain.CurrentDomain.BaseDirectory + "temp\\Out" + i + ".png --export-dpi=120", 5000);
                 var uri = new Uri(AppDomain.CurrentDomain.BaseDirectory + "temp\\Out" + i + ".png");
-                bitmap = new BitmapImage(uri);
-                img.Source = bitmap;
+                if (proc.Completed)
+                {
+                    BitmapImage bitmap = new();
+                    bitmap = new BitmapImage(uri);
+                    img.Source = bitmap;
+                }
             }
         }
 
 
-
-        private static void ExecuteCommandSync(object command)
-        {
-            Debug.WriteLine(command);
-            try
-            {
-                ProcessStartInfo procStartInfo =new ProcessStartInfo("cmd", "/c " + command);
-
-                procStartInfo.RedirectStandardOutput = true;
-                procStartInfo.UseShellExecute = false;
-                procStartInfo.CreateNoWindow = true;
-                Process proc = new Process();
-                proc.StartInfo = procStartInfo;
-                proc.Start();
-                string result = proc.StandardOutput.ReadToEnd();
-                Debug.Write(result);
-            }
-            catch{}
-        }
 
         private void titre_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
@@ -235,7 +216,7 @@ namespace STNMI
             abt.Show();
         }
 
-        private void Enregistrer_Click(object sender, RoutedEventArgs e)
+        private async void Enregistrer_Click(object sender, RoutedEventArgs e)
         {
             // Displays a SaveFileDialog so the user can save the Image
             // assigned to Button2.
@@ -250,34 +231,23 @@ namespace STNMI
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        Task.Run(() =>
-                        {
-                            ExecuteCommandSync("abcm2ps -g temp\\text.abc");
-                            string cmd = AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape -p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename="+ saveFileDialog1.FileName + " --export-dpi=300";
-                            ExecuteCommandSync(cmd);
-                        });
+                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g temp\\text.abc", 5000);
+                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape","-p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300",10000);
                         break;
 
                     case 2:
-                        Task.Run(() =>
-                        {
-                            ExecuteCommandSync("abcm2ps -g temp\\text.abc");
-                            string cmd = AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape -p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300";
-                            ExecuteCommandSync(cmd);
-                        });
+                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g temp\\text.abc", 5000);
+                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
                         break;
                     case 3:
-                        Task.Run(() =>
-                        {
-                            ExecuteCommandSync("abc2midi temp\\text.abc -o "+ saveFileDialog1.FileName);
-                        });
+                        await ProcessAsyncHelper.ExecuteShellCommand("abc2midi","temp\\text.abc -o " + saveFileDialog1.FileName,10000);
                         break;
                     case 4:
-                        File.WriteAllTextAsync(saveFileDialog1.FileName ,enTete + entry.Text);
+                        await File.WriteAllTextAsync(saveFileDialog1.FileName, enTete + entry.Text);
                         break;
                 }
 
-                
+
             }
         }
 
@@ -298,13 +268,10 @@ namespace STNMI
         }
 
 
-        private void PlayMIDI_Click(object sender, RoutedEventArgs e)
+        private async void PlayMIDI_Click(object sender, RoutedEventArgs e)
         {
-            Task.Run(() =>
-            {
-                ExecuteCommandSync("abc2midi temp\\text.abc -o temp\\play.mid");
-                playSimpleSound(AppDomain.CurrentDomain.BaseDirectory + "temp\\play.mid");
-            });
+            await ProcessAsyncHelper.ExecuteShellCommand("abc2midi","temp\\text.abc -o temp\\play.mid",10000);
+            playSimpleSound(AppDomain.CurrentDomain.BaseDirectory + "temp\\play.mid");
         }
     }
 }
