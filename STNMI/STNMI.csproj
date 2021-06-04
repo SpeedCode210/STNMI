@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>STNMI.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,6 +31,8 @@
   <ItemGroup>
     <PackageReference Include="Melanchall.DryWetMidi" Version="5.2.0" />
     <PackageReference Include="NAudio" Version="2.0.0" />
+    <PackageReference Include="RamDisk" Version="1.0.4" />
+    <PackageReference Include="SharpVectors" Version="1.7.1" />
   </ItemGroup>
 
   <ItemGroup>

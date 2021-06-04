@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:local="clr-namespace:STNMI"
         mc:Ignorable="d"
         Title="Eclipium STNMI" Height="700" Width="1200" WindowStyle="None" Background="Transparent" AllowsTransparency="True" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
@@ -149,8 +150,9 @@
         </Button>
         <Rectangle HorizontalAlignment="Left" Height="595" Margin="528,70,0,0" Stroke="White" Fill="White" VerticalAlignment="Top" Width="646"/>
         <ScrollViewer Margin="528,70,26,35">
-            <Image Name="img" Stretch="Uniform" Height="2447" Width="606" VerticalAlignment="Top">
-            </Image>
+            <!--<Image Name="img" Stretch="Uniform" Height="2447" Width="606" VerticalAlignment="Top">
+            </Image>-->
+            <svgc:SvgViewbox Name="img" HorizontalAlignment="Stretch" VerticalAlignment="Top" Stretch="Uniform" Margin="10"/>
         </ScrollViewer>
         <TextBox Margin="153,70,760,604" Name="titre" Text="Titre" FontSize="16" TextAlignment="Center" TextChanged="titre_TextChanged"/>
         <TextBox Margin="153,101,760,573" Name="auteur" Text="Auteur" FontSize="16" TextAlignment="Center" TextChanged="titre_TextChanged"/>

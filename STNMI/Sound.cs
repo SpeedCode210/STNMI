@@ -64,9 +64,9 @@ namespace Guitar_Tuner
             return inputDevice;
         }
 
-        public void StartDetect(int inputDevice)
+        public void StartDetect(int inputDevice, ref Thread th)
         {
-            WaveInEvent waveIn = new WaveInEvent();
+            using WaveInEvent waveIn = new WaveInEvent();
 
             waveIn.DeviceNumber = inputDevice;
             waveIn.WaveFormat = new WaveFormat(44100, 1);
@@ -127,6 +127,7 @@ namespace Guitar_Tuner
             // stop recording
             waveIn.StopRecording();
             waveIn.Dispose();
+            
         }
 
         void WaveIn_DataAvailable(object sender, WaveInEventArgs e)

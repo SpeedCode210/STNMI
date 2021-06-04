@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using RamDisk;
 
 namespace STNMI
 {
@@ -70,9 +71,18 @@ namespace STNMI
             midiSorts.ItemsSource = OutputDevice.GetAll();
             midiSorts.SelectionChanged += MidiSorts_SelectionChanged;
             midiSorts.SelectedIndex = 0;
+            Task.Run(() =>
+            {
+                try
+                {
+                    RamDrive.Mount(32, FileSystem.NTFS, 'S', "STNMI");
+                }
+                catch { }
+            });
+            Thread.Sleep(3000);
             try
             {
-                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "temp");
+                Directory.CreateDirectory("S:\\temp");
             }
             catch { }
         }
@@ -102,7 +112,9 @@ namespace STNMI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            RamDrive.Unmount('S');
             System.Windows.Application.Current.Shutdown();
+            sound.isActive = false;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -121,11 +133,14 @@ namespace STNMI
                 effacer = !effacer;
             }
             int i = micro.SelectedIndex;
-            Task.Run(() =>
+            sound.isActive = true;
+            Thread th1 = null;
+            th1 = new(() =>
             {
-                sound.isActive = true;
-                sound.StartDetect(i);
+
+                sound.StartDetect(i, ref th1);
             });
+            th1.Start();
         }
 
         int index2 = 1;
@@ -141,7 +156,6 @@ namespace STNMI
                 a = a + "\n";
             score = score + a;
             entry.Text = currentGamme.Convert(score);
-            //entry.Text = entry.Text + a;
             SaveFile(entry.Text);
         }
 
@@ -162,29 +176,18 @@ namespace STNMI
             }
         }
         int index = 1;
-        int index3 = 1;
         private async void SaveFile(string s, bool b = false)
         {
-            index3++;
-            if (index3 % 2 == 0 || b)
-            {
-                var i = index;
-                if (i < 20)
-                    index++;
-                else
-                    index = 1;
-                i = index;
-                await File.WriteAllTextAsync("temp\\text.abc", enTete + s);
-                await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g temp\\text.abc", 5000);
-                var proc = await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + AppDomain.CurrentDomain.BaseDirectory + "temp\\Out" + i + ".png --export-dpi=120", 5000);
-                var uri = new Uri(AppDomain.CurrentDomain.BaseDirectory + "temp\\Out" + i + ".png");
-                if (proc.Completed)
-                {
-                    BitmapImage bitmap = new();
-                    bitmap = new BitmapImage(uri);
-                    img.Source = bitmap;
-                }
-            }
+            var i = index;
+            if (i < 20)
+                index++;
+            else
+                index = 1;
+            i = index;
+            await File.WriteAllTextAsync("S:\\temp\\text.abc", enTete + s);
+            await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g S:\\temp\\text.abc -O S:\\temp\\Out" + i + " -c", 5000);
+            var uri = new Uri("S:\\temp\\Out" + i + "001" + ".svg");
+            img.Source = uri;
         }
 
 
@@ -231,16 +234,16 @@ namespace STNMI
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g temp\\text.abc", 5000);
-                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape","-p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300",10000);
+                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g S:\\temp\\text.abc", 5000);
+                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p S:\\temp\\Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
                         break;
 
                     case 2:
-                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g temp\\text.abc", 5000);
-                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p " + AppDomain.CurrentDomain.BaseDirectory + "Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
+                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g S:\\temp\\text.abc", 5000);
+                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p S:\\temp\\Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
                         break;
                     case 3:
-                        await ProcessAsyncHelper.ExecuteShellCommand("abc2midi","temp\\text.abc -o " + saveFileDialog1.FileName,10000);
+                        await ProcessAsyncHelper.ExecuteShellCommand("abc2midi", "S:\\temp\\text.abc -o " + saveFileDialog1.FileName, 10000);
                         break;
                     case 4:
                         await File.WriteAllTextAsync(saveFileDialog1.FileName, enTete + entry.Text);
@@ -270,8 +273,8 @@ namespace STNMI
 
         private async void PlayMIDI_Click(object sender, RoutedEventArgs e)
         {
-            await ProcessAsyncHelper.ExecuteShellCommand("abc2midi","temp\\text.abc -o temp\\play.mid",10000);
-            playSimpleSound(AppDomain.CurrentDomain.BaseDirectory + "temp\\play.mid");
+            await ProcessAsyncHelper.ExecuteShellCommand("abc2midi", "S:\\temp\\text.abc -o S:\\temp\\play.mid", 10000);
+            playSimpleSound("S:\\temp\\play.mid");
         }
     }
 }

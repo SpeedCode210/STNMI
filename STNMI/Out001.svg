@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+	"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xml:space='preserve'
+	width="531" height="38">
+<title>S:\\temp\\text.abc (1)</title>
+<g transform="scale(0.750)" font-family="Times" font-size="20.00">
+<text x="354.13" y="25.67" text-anchor="middle">Titre</text>
+</g>
+<g transform="scale(0.750)" font-family="Times" font-size="14.00" font-style="italic">
+<text x="694.93" y="45.34" text-anchor="end">Auteur</text>
+</g>
+</svg>
