@@ -73,7 +73,6 @@ namespace Guitar_Tuner
             waveIn.DataAvailable += WaveIn_DataAvailable;
 
             bufferedWaveProvider = new BufferedWaveProvider(waveIn.WaveFormat);
-
             // begin record
             waveIn.StartRecording();
 
@@ -106,7 +105,7 @@ namespace Guitar_Tuner
                                 MainWindow wind = App.Current.MainWindow as MainWindow;
                                 try {
                                     var d = Converter.ConvertBase(freq * MainWindow.currentInstrument.Coeff);
-                                GammeAutomatique.NbNotes[d]++;
+                                    GammeAutomatique.NbNotes[d]++;
                                 }
                                 catch (KeyNotFoundException e)
                                 {}

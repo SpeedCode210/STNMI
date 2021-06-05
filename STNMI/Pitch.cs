@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using System;
+using System.Diagnostics;
 
 namespace Guitar_Tuner
 {
@@ -9,33 +10,33 @@ namespace Guitar_Tuner
         WaveBuffer waveBuffer;
         Autocorrelator pitchDetector;
 
-        public Pitch(IWaveProvider source)
+        public Pitch(IWaveProvider src)
         {
-            if (source.WaveFormat.SampleRate != 44100)
+            if (src.WaveFormat.SampleRate != 44100)
             {
                 throw new ArgumentException("Source must be at 44.1kHz");
             }
 
-            if (source.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
+            if (src.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
             {
                 throw new ArgumentException("Source must be IEEE floating point audio data");
             }
 
-            if (source.WaveFormat.Channels != 1)
+            if (src.WaveFormat.Channels != 1)
             {
                 throw new ArgumentException("Source must be a mono input source");
             }
 
-            this.source = source;
-            this.pitchDetector = new Autocorrelator(source.WaveFormat.SampleRate);
-            this.waveBuffer = new WaveBuffer(8192);
+            source = src;
+            pitchDetector = new Autocorrelator(source.WaveFormat.SampleRate);
+            waveBuffer = new WaveBuffer(8192);
         }
 
         public float Get(byte[] buffer)
         {
             if (waveBuffer == null || waveBuffer.MaxSize < buffer.Length)
             {
-                waveBuffer = new WaveBuffer(buffer.Length);
+                waveBuffer = new WaveBuffer(buffer);
             }
 
             int bytesRead = source.Read(waveBuffer, 0, buffer.Length);
@@ -46,7 +47,6 @@ namespace Guitar_Tuner
             }
 
             int frames = bytesRead / sizeof(float);
-
             return pitchDetector.DetectPitch(waveBuffer.FloatBuffer, frames);
         }
     }

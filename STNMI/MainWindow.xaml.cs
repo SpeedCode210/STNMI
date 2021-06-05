@@ -11,10 +11,11 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using RamDisk;
+using SourceChord.FluentWPF;
 
 namespace STNMI
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : AcrylicWindow
     {
 
         private Sound sound = new();
@@ -85,6 +86,14 @@ namespace STNMI
                 Directory.CreateDirectory("S:\\temp");
             }
             catch { }
+            this.Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            RamDrive.Unmount('S');
+            sound.isActive = false;
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void MidiSorts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -108,18 +117,6 @@ namespace STNMI
             Debug.WriteLine(currentInstrument.Name);
             if (titre != null && auteur != null && currentInstrument != null)
                 enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            RamDrive.Unmount('S');
-            System.Windows.Application.Current.Shutdown();
-            sound.isActive = false;
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -211,12 +208,6 @@ namespace STNMI
             {
                 Debug.WriteLine(ex.Message);
             }
-        }
-
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            var abt = new about();
-            abt.Show();
         }
 
         private async void Enregistrer_Click(object sender, RoutedEventArgs e)
