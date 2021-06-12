@@ -2,7 +2,6 @@
 using System;
 using FrequencyToNoteConverter;
 using STNMI;
-using System.Windows.Threading;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -23,45 +22,6 @@ namespace Guitar_Tuner
                 strs.Add(WaveInEvent.GetCapabilities(i).ProductName);
             }
             return strs;
-        }
-
-        public int SelectInputDevice()
-        {
-            int inputDevice = 0;
-            bool isValidChoice = false;
-
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("Please select input or recording device: ");
-
-                for (int i = 0; i < WaveInEvent.DeviceCount; i++)
-                {
-                    Console.WriteLine(i + ". " + WaveInEvent.GetCapabilities(i).ProductName);
-                }
-
-                Console.WriteLine();
-
-                try
-                {
-                    if (int.TryParse(Console.ReadLine(), out inputDevice))
-                    {
-                        isValidChoice = true;
-                        Console.WriteLine("You have chosen " + WaveInEvent.GetCapabilities(inputDevice).ProductName + ".\n");
-                    }
-                    else
-                    {
-                        isValidChoice = false;
-                    }
-                }
-                catch
-                {
-                    throw new ArgumentException("Device # chosen is out of range.");
-                }
-
-            } while (isValidChoice == false);
-
-            return inputDevice;
         }
 
         public void StartDetect(int inputDevice, ref Thread th)
@@ -91,28 +51,30 @@ namespace Guitar_Tuner
 
                 float freq = pitch.Get(buffer);
 
-                if (freq != 0 && freq < 8820)
+                if (freq != 0 && ScoreData.currentInstrument.TestFreq(freq))
                 {
-                    Debug.WriteLine(freq + " | "+ freq * MainWindow.currentInstrument.Coeff);
-                    var c = Converter.Convert(freq * MainWindow.currentInstrument.Coeff);
+                    Debug.WriteLine(freq + " | " + freq * ScoreData.currentInstrument.Coeff);
+                    var c = Converter.Convert(freq * ScoreData.currentInstrument.Coeff);
                     if (c == a)
                         b++;
                     else
                     {
-                        if(b>0)
-                            App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (SendOrPostCallback)delegate
+                        if (b > 0)
+                        {
+                            try
                             {
-                                MainWindow wind = App.Current.MainWindow as MainWindow;
-                                try {
-                                    var d = Converter.ConvertBase(freq * MainWindow.currentInstrument.Coeff);
-                                    GammeAutomatique.NbNotes[d]++;
-                                }
-                                catch (KeyNotFoundException e)
-                                {}
-                                wind.Write(a);
-                                b = 0;
-                                a = c;
-                            }, null);
+                                var d = Converter.ConvertBase(freq * ScoreData.currentInstrument.Coeff);
+                                GammeAutomatique.NbNotes[d]++;
+                            }
+                            catch (KeyNotFoundException e)
+                            {
+                                Debug.WriteLine(e); 
+                            }
+                            ScoreData.Write(a);
+                            b = 0;
+                            a = c;
+
+                        }
                         else
                         {
                             b++;
@@ -126,7 +88,7 @@ namespace Guitar_Tuner
             // stop recording
             waveIn.StopRecording();
             waveIn.Dispose();
-            
+
         }
 
         void WaveIn_DataAvailable(object sender, WaveInEventArgs e)

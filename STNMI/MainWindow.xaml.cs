@@ -5,66 +5,30 @@ using System.IO;
 using Melanchall.DryWetMidi.Devices;
 using Melanchall.DryWetMidi.Core;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using RamDisk;
-using SourceChord.FluentWPF;
 
 namespace STNMI
 {
-    public partial class MainWindow : AcrylicWindow
+    public partial class MainWindow : Window
     {
 
         private Sound sound = new();
-        private string enTete = "X:1\nT: Titre\nC:Auteur\nK:C clef=treble\n%%MIDI program 1 n\n";
-        private Instrument[] instruments = new Instrument[]
-        {
-            new("Piano",1,1),
-            new("Violon",1,41),
-            new("Alto",1,42,"alto"),
-            new("Violoncelle",1,43,"bass"),
-            new("Contrebasse",2,44,"bass"),
-            new("Contrebasson",2,44),
-            new("Guitare",2,25),
-            new("Flûte à bec",0.5,75),
-            new("Flûte traversière",1,74),
-            new("Flûte piccolo",0.5,73),
-            new("Trombone",1,58),
-            new("Trompette",1,57),
-            new("Hautbois",2,69),
-            new("Harpe",1,47),
-            new("Clarinette en Sib",1.1224620248,72),
-            new("Clarinette en La",1.189207115,72),
-            new("Cor",1.498307,58)
-
-
-        };
 
 
         private bool effacer = false;
 
-        private string score = "";
 
-        public static Instrument currentInstrument;
-
-        public static Gamme currentGamme;
-
-        private int currentMIDIDevice;
-
-        OutputDevice outputDevice;
 
         public MainWindow()
         {
             InitializeComponent();
-            instrums.ItemsSource = instruments;
-            currentInstrument = instruments[0];
+            instrums.ItemsSource = ScoreData.instruments;
+            ScoreData.currentInstrument = ScoreData.instruments[0];
             instrums.SelectedIndex = 0;
             instrums.SelectionChanged += Instrums_SelectionChanged;
             gamms.ItemsSource = Gammes.gammes;
-            currentGamme = Gammes.gammes[0];
+            ScoreData.currentGamme = Gammes.gammes[0];
             gamms.SelectedIndex = 0;
             gamms.SelectionChanged += Gamms_SelectionChanged;
             micro.ItemsSource = Sound.GetDevices();
@@ -72,51 +36,52 @@ namespace STNMI
             midiSorts.ItemsSource = OutputDevice.GetAll();
             midiSorts.SelectionChanged += MidiSorts_SelectionChanged;
             midiSorts.SelectedIndex = 0;
-            Task.Run(() =>
-            {
-                try
-                {
-                    RamDrive.Mount(32, FileSystem.NTFS, 'S', "STNMI");
-                }
-                catch { }
-            });
-            Thread.Sleep(3000);
+            auteur.TextChanged += Auteur_TextChanged;
+            titre.TextChanged += Titre_TextChanged;
             try
             {
-                Directory.CreateDirectory("S:\\temp");
+                Directory.CreateDirectory(Path.GetTempPath()+"STNMI");
             }
             catch { }
             this.Closing += MainWindow_Closing;
+            ScoreData.WriteCompleted += Write;
+        }
+
+        private void Titre_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            ScoreData.titre = titre.Text;
+            ScoreData.ReloadEnTete();
+        }
+
+        private void Auteur_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            ScoreData.auteur = auteur.Text;
+            ScoreData.ReloadEnTete();
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            RamDrive.Unmount('S');
             sound.isActive = false;
             System.Windows.Application.Current.Shutdown();
         }
 
         private void MidiSorts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            currentMIDIDevice = midiSorts.SelectedIndex;
-            outputDevice = OutputDevice.GetById(currentMIDIDevice);
+            ScoreData.currentMIDIDevice = midiSorts.SelectedIndex;
+            ScoreData.outputDevice = OutputDevice.GetById(ScoreData.currentMIDIDevice);
         }
 
         private void Gamms_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            currentGamme = Gammes.gammes[gamms.SelectedIndex];
-            Debug.WriteLine(currentGamme.Name);
-            entry.Text = currentGamme.Convert(score);
-            if (titre != null && auteur != null && currentInstrument != null)
-                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
+            ScoreData.currentGamme = Gammes.gammes[gamms.SelectedIndex];
+            entry.Text = ScoreData.currentGamme.Convert(ScoreData.score);
+            ScoreData.ReloadEnTete();
         }
 
         private void Instrums_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            currentInstrument = instruments[instrums.SelectedIndex];
-            Debug.WriteLine(currentInstrument.Name);
-            if (titre != null && auteur != null && currentInstrument != null)
-                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
+            ScoreData.currentInstrument = ScoreData.instruments[instrums.SelectedIndex];
+            ScoreData.ReloadEnTete();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -125,7 +90,7 @@ namespace STNMI
             Stop.IsEnabled = true;
             if (effacer)
             {
-                score = "";
+                ScoreData.score = "";
                 entry.Clear();
                 effacer = !effacer;
             }
@@ -140,20 +105,13 @@ namespace STNMI
             th1.Start();
         }
 
-        int index2 = 1;
-        public void Write(string a)
+        private void Write()
         {
-            if (titre != null && auteur != null && currentInstrument != null)
-                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
-            if (index2 <= 24)
-                index2++;
-            else
-                index2 = 1;
-            if (index2 == 28)
-                a = a + "\n";
-            score = score + a;
-            entry.Text = currentGamme.Convert(score);
-            SaveFile(entry.Text);
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                entry.Text = ScoreData.gammeScore;
+                SaveFile();
+            });
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -163,7 +121,7 @@ namespace STNMI
             try
             {
                 sound.isActive = false;
-                SaveFile(entry.Text, true);
+                SaveFile();
                 effacer = true;
                 Gammes.gammes[0] = new GammeAutomatique("Détection automatique");
             }
@@ -173,26 +131,22 @@ namespace STNMI
             }
         }
         int index = 1;
-        private async void SaveFile(string s, bool b = false)
+        private async void SaveFile()
         {
-            var i = index;
-            if (i < 20)
-                index++;
-            else
-                index = 1;
-            i = index;
-            await File.WriteAllTextAsync("S:\\temp\\text.abc", enTete + s);
-            await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g S:\\temp\\text.abc -O S:\\temp\\Out" + i + " -c", 5000);
-            var uri = new Uri("S:\\temp\\Out" + i + "001" + ".svg");
-            img.Source = uri;
-        }
-
-
-
-        private void titre_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if (titre != null && auteur != null && currentInstrument != null)
-                enTete = "X:1\nT: " + titre.Text + "\nC:" + auteur.Text + "\nK:" + currentGamme.Key + " clef=" + currentInstrument.Clef + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
+            try
+            {
+                var i = index;
+                if (i < 20)
+                    index++;
+                else
+                    index = 1;
+                i = index;
+                await File.WriteAllTextAsync(Path.GetTempPath() + "STNMI\\text.abc", ScoreData.enTete + ScoreData.gammeScore);
+                await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g "+ Path.GetTempPath() + "STNMI\\text.abc -O " + Path.GetTempPath() + "STNMI\\Out" + i, 5000);
+                var uri = new Uri(Path.GetTempPath() + "STNMI\\Out" + i + "001" + ".svg");
+                img.Source = uri;
+            }
+            catch { }
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
@@ -202,7 +156,7 @@ namespace STNMI
             try
             {
                 sound.isActive = false;
-                SaveFile(entry.Text, true);
+                SaveFile();
             }
             catch (Exception ex)
             {
@@ -210,7 +164,33 @@ namespace STNMI
             }
         }
 
-        private async void Enregistrer_Click(object sender, RoutedEventArgs e)
+
+        public void playSimpleSound(string wavFile)
+        {
+            PlayMIDI.IsEnabled = false;
+            var th2 = new Thread(() =>
+            {
+                var midiFile = MidiFile.Read(wavFile);
+                midiFile.Play(ScoreData.outputDevice);
+            });
+            th2.Start();
+
+            PlayMIDI.IsEnabled = true;
+        }
+
+
+        private async void PlayMIDI_Click(object sender, RoutedEventArgs e)
+        {
+            await ProcessAsyncHelper.ExecuteShellCommand("abc2midi", Path.GetTempPath() + "STNMI\\text.abc -o " + Path.GetTempPath() + "STNMI\\play.mid", 10000);
+            playSimpleSound( Path.GetTempPath() + "STNMI\\play.mid");
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
             // Displays a SaveFileDialog so the user can save the Image
             // assigned to Button2.
@@ -225,47 +205,24 @@ namespace STNMI
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g S:\\temp\\text.abc", 5000);
-                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p S:\\temp\\Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
+                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g " + Path.GetTempPath() + "STNMI\\text.abc -O " + Path.GetTempPath() + "STNMI\\Out", 5000);
+                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape.exe", "-p " + Path.GetTempPath() + "STNMI\\Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
                         break;
 
                     case 2:
-                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g S:\\temp\\text.abc", 5000);
-                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape", "-p S:\\temp\\Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
+                        await ProcessAsyncHelper.ExecuteShellCommand("abcm2ps", "-g " + Path.GetTempPath() + "STNMI\\text.abc -O " + Path.GetTempPath() + "STNMI\\Out", 5000);
+                        await ProcessAsyncHelper.ExecuteShellCommand(AppDomain.CurrentDomain.BaseDirectory + "Inkscape/bin/inkscape.exe", "-p " + Path.GetTempPath() + "STNMI\\Out001.svg --export-filename=" + saveFileDialog1.FileName + " --export-dpi=300", 10000);
                         break;
                     case 3:
-                        await ProcessAsyncHelper.ExecuteShellCommand("abc2midi", "S:\\temp\\text.abc -o " + saveFileDialog1.FileName, 10000);
+                        await ProcessAsyncHelper.ExecuteShellCommand("abc2midi", Path.GetTempPath() + "STNMI\\text.abc -o " + saveFileDialog1.FileName, 10000);
                         break;
                     case 4:
-                        await File.WriteAllTextAsync(saveFileDialog1.FileName, enTete + entry.Text);
+                        await File.WriteAllTextAsync(saveFileDialog1.FileName, ScoreData.enTete + ScoreData.gammeScore);
                         break;
                 }
 
 
             }
-        }
-
-
-        public void playSimpleSound(string wavFile)
-        {
-            App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (SendOrPostCallback)delegate
-            {
-                PlayMIDI.IsEnabled = false;
-            }, null);
-            var midiFile = MidiFile.Read(wavFile);
-
-            midiFile.Play(outputDevice);
-            App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (SendOrPostCallback)delegate
-            {
-                PlayMIDI.IsEnabled = true;
-            }, null);
-        }
-
-
-        private async void PlayMIDI_Click(object sender, RoutedEventArgs e)
-        {
-            await ProcessAsyncHelper.ExecuteShellCommand("abc2midi", "S:\\temp\\text.abc -o S:\\temp\\play.mid", 10000);
-            playSimpleSound("S:\\temp\\play.mid");
         }
     }
 }

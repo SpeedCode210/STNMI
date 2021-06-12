@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>STNMI.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -21,7 +22,11 @@
   <ItemGroup>
     <None Remove="eclipium.ico" />
     <None Remove="EclipiumLogoFluentWithText.png" />
+    <None Remove="pause.png" />
+    <None Remove="play.png" />
+    <None Remove="recording.png" />
     <None Remove="STNMI.ico" />
+    <None Remove="stop.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,16 +34,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentWPF" Version="0.9.0" />
     <PackageReference Include="Melanchall.DryWetMidi" Version="5.2.0" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.4" />
     <PackageReference Include="NAudio" Version="2.0.0" />
-    <PackageReference Include="RamDisk" Version="1.0.4" />
     <PackageReference Include="SharpVectors" Version="1.7.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="eclipium.ico" />
+    <Resource Include="pause.png" />
+    <Resource Include="play.png" />
+    <Resource Include="recording.png" />
     <Resource Include="STNMI.ico" />
+    <Resource Include="stop.png" />
   </ItemGroup>
 
   <ItemGroup>

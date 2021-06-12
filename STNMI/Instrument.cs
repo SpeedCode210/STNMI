@@ -6,13 +6,22 @@
         public string Clef { get; private set; }
         public double Coeff { get;private set; }
         public int MIDI { get; private set; }
+        public int MinFreq { get; private set; }
+        public int MaxFreq { get; private set; }
 
-        public Instrument(string name, double coeff,int MIDI,string clef = "treble")
+        public Instrument(string name, double coeff,int midi,string clef = "treble",int min = 0, int max = 10000)
         {
             Name = name;
             Coeff = coeff;
             Clef = clef;
-            this.MIDI = MIDI;
+            MIDI = midi;
+            MinFreq = min;
+            MaxFreq = max;
+        }
+
+        public bool TestFreq(float value)
+        {
+            return MinFreq < value && value < MaxFreq ;
         }
 
         public override string ToString()
