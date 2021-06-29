@@ -1,0 +1,42 @@
+﻿<Window x:Class="STNMI.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:STNMI"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        mc:Ignorable="d"
+        Title="Settings" Height="450" Width="800" WindowStartupLocation="CenterScreen"  
+        ui:WindowHelper.UseModernWindowStyle="True">
+    <Grid>
+        <ui:NavigationView ItemInvoked="NavView_ItemInvoked" Name="NavView" AlwaysShowHeader="True" PaneDisplayMode="Top" IsTitleBarAutoPaddingEnabled="False" IsSettingsVisible="False" IsBackEnabled="False" IsBackButtonVisible="Collapsed" OpenPaneLength="180">
+            <ui:NavigationView.MenuItems>
+
+                <ui:NavigationViewItem Content="Apparence" Tag="Apparence">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Glyph="&#xE790;" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Audio" Tag="Audio">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Glyph="&#xE720;" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Moteur" Tag="Engine">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Glyph="&#xE90B;" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Mises à jour" Tag="Updates">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Glyph="&#xE777;" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+            </ui:NavigationView.MenuItems>
+        </ui:NavigationView>
+    </Grid>
+</Window>

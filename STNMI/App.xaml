@@ -10,6 +10,11 @@
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ui:ToggleSwitch">
+                <Setter Property="OffContent" Value=" " />
+                <Setter Property="OnContent" Value=" " />
+                <Setter Property="Margin" Value="0,0,-110,0" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,0 +1,35 @@
+﻿<ScrollViewer x:Class="STNMI.AudioSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:local="clr-namespace:STNMI"
+        mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" Content="Utilisation des pilotes ASIO" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ui:ToggleSwitch Grid.Column="1" Grid.Row="0" Name="Asio" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="Pilote ASIO" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Name="AsioDriver" MinWidth="250" VerticalAlignment="Center"/>
+        <Label Grid.Column="0" Grid.Row="2" Content="Entrée par défaut" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Name="AudioIn" MinWidth="250" VerticalAlignment="Center"/>
+        <Label Grid.Column="0" Grid.Row="3" Content="Sortie MIDI" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right" Name="AudioOut" MinWidth="250" VerticalAlignment="Center"/>
+        <Label Grid.Column="0" Grid.Row="4" Content="Volume d'entrée" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Slider Grid.Column="1" Grid.Row="4" Name="VolumeIn" Minimum="1" Maximum="200" Value="100" Width="250" HorizontalAlignment="Right" />
+        <Label Grid.Column="0" Grid.Row="5" Content="Volume de sortie" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Slider Grid.Column="1" Grid.Row="5" Name="VolumeOut" Minimum="1" Maximum="200" Value="100" Width="250" HorizontalAlignment="Right" />
+    </Grid>
+</ScrollViewer>

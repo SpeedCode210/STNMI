@@ -7,6 +7,9 @@ using Melanchall.DryWetMidi.Core;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
+using Meziantou.WpfFontAwesome;
+using System.Threading.Tasks;
+using ModernWpf;
 
 namespace STNMI
 {
@@ -24,8 +27,8 @@ namespace STNMI
         {
             InitializeComponent();
             instrums.ItemsSource = ScoreData.instruments;
-            ScoreData.currentInstrument = ScoreData.instruments[0];
-            instrums.SelectedIndex = 0;
+            ScoreData.currentInstrument = ScoreData.instruments[Parametres.Default.DefaultInstrument];
+            instrums.SelectedIndex = Parametres.Default.DefaultInstrument;
             instrums.SelectionChanged += Instrums_SelectionChanged;
             gamms.ItemsSource = Gammes.gammes;
             ScoreData.currentGamme = Gammes.gammes[0];
@@ -38,6 +41,7 @@ namespace STNMI
             midiSorts.SelectedIndex = 0;
             auteur.TextChanged += Auteur_TextChanged;
             titre.TextChanged += Titre_TextChanged;
+            tempo.ValueChanged += Tempo_ValueChanged;
             try
             {
                 Directory.CreateDirectory(Path.GetTempPath()+"STNMI");
@@ -45,6 +49,19 @@ namespace STNMI
             catch { }
             this.Closing += MainWindow_Closing;
             ScoreData.WriteCompleted += Write;
+            ThemeManager.SetRequestedTheme(this,(ElementTheme)Parametres.Default.Theme);
+            if (!Parametres.Default.ReglagesEnabled) 
+            { 
+                IconeAngle.SolidIcon = FontAwesomeSolidIcon.AngleUp;
+                Reglages.Height = 0;
+            }
+            auteur.Text = Parametres.Default.Author;
+        }
+
+        private void Tempo_ValueChanged(ModernWpf.Controls.NumberBox sender, ModernWpf.Controls.NumberBoxValueChangedEventArgs args)
+        {
+            ScoreData.tempo = (int)tempo.Value;
+            ScoreData.ReloadEnTete();
         }
 
         private void Titre_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -123,7 +140,7 @@ namespace STNMI
                 sound.isActive = false;
                 SaveFile();
                 effacer = true;
-                Gammes.gammes[0] = new GammeAutomatique("Détection automatique");
+                ScoreData.Reset();
             }
             catch (Exception ex)
             {
@@ -223,6 +240,50 @@ namespace STNMI
 
 
             }
+        }
+
+        private bool isAnimatingReglages = false;
+        private async void ReglagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isAnimatingReglages) return;
+            isAnimatingReglages = true;
+            if (IconeAngle.SolidIcon == FontAwesomeSolidIcon.AngleDown)
+            {
+                IconeAngle.SolidIcon = FontAwesomeSolidIcon.AngleUp;
+                while (Reglages.Height > 0)
+                {
+                    Reglages.Height -= 20;
+                    await Task.Delay(10);
+                }
+               
+            }
+            else
+            {
+
+                IconeAngle.SolidIcon = FontAwesomeSolidIcon.AngleDown;
+                while (Reglages.Height < 300)
+                {
+                    Reglages.Height += 20;
+                    await Task.Delay(10);
+                }
+
+            }
+            isAnimatingReglages = false;
+        }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            new About().Show();
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            new Settings(this).Show();
+        }
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            new Settings(this,3).Show();
         }
     }
 }

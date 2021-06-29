@@ -1,0 +1,40 @@
+﻿<ScrollViewer
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="STNMI.ApparenceSettings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:local="clr-namespace:STNMI"  HorizontalAlignment="Stretch">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" Content="Thème" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Name="Theme" MinWidth="150" VerticalAlignment="Center">
+            <ComboBoxItem Content="Système"/>
+            <ComboBoxItem Content="Clair"/>
+            <ComboBoxItem Content="Sombre"/>
+        </ComboBox>
+        <Label Grid.Column="0" Grid.Row="1" Content="Langue" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Name="Lang" MinWidth="150" VerticalAlignment="Center">
+            <ComboBoxItem Content="Système"/>
+            <ComboBoxItem Content="Français"/>
+            <ComboBoxItem Content="English"/>
+            <ComboBoxItem Content="русский"/>
+        </ComboBox>
+        <Label Grid.Column="0" Grid.Row="2" Content="Instrument par défaut" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Name="DefaultInstrument" MinWidth="150" VerticalAlignment="Center"/>
+        <Label Grid.Column="0" Grid.Row="3" Content="Auteur par défaut" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right" MinWidth="150" Height="30" VerticalAlignment="Center" Name="DefaultAuthor" />
+        <Label Grid.Column="0" Grid.Row="4" Content="Afficher réglages au démarrage" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ui:ToggleSwitch Grid.Column="1" Grid.Row="4" Name="ReglagesEnabled" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+    </Grid>
+</ScrollViewer>

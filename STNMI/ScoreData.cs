@@ -16,8 +16,8 @@ namespace STNMI
         public static string auteur = "Auteur";
         public static string titre = "Titre";
 
-        public static string enTete = "X:1\nT: Titre\nC:Auteur\nK:C clef=treble\n%%MIDI program 1 n\n";
-        public static readonly Instrument[] instruments = new Instrument[]
+        public static string enTete = "X:1\nT: Titre\nC:Auteur\nL:1/32\nK:C clef=treble\n%%MIDI program 1 n\n";
+        public static Instrument[] instruments = new Instrument[]
         {
             new("Piano",1,1,"treble",26,4200),
             new("Violon",1,41,"treble",180,2100),
@@ -29,6 +29,7 @@ namespace STNMI
             new("Flûte à bec",0.5,75),
             new("Flûte traversière",1,74),
             new("Flûte piccolo",0.5,73),
+            new("Saxophone",1,40),
             new("Trombone",1,58),
             new("Trompette",1,57),
             new("Hautbois",2,69),
@@ -49,15 +50,20 @@ namespace STNMI
 
         public static int currentMIDIDevice;
 
+        public static int tempo;
+
         public static OutputDevice outputDevice;
 
         public static void ReloadEnTete()
         {
             enTete = "X:1\nT: " + titre
                 + "\nC:" + auteur 
-                + "\nK:" + currentGamme.Key 
-                + " clef=" + currentInstrument.Clef
-                + "\n%%MIDI program " + currentInstrument.MIDI + " n\n";
+                + "\nL:1/16"
+                + "\nK:" + currentGamme.Key
+                + "\nQ:" + tempo
+                + "\n%%MIDI program " + currentInstrument.MIDI
+                + "\nV:1 clef=" + currentInstrument.Clef
+                + " \n";
         }
 
         private static int index2 = 1;
@@ -66,16 +72,21 @@ namespace STNMI
 
             ReloadEnTete();
 
-            if (index2 <= 24)
-                index2++;
-            else
-                index2 = 1;
+            if (index2 <= 24) index2++;
+            else index2 = 1;
+
             if (index2 == 24)
                 a = a + "\n";
             score += a;
 
             gammeScore = currentGamme.Convert(score);
             WriteCompleted?.Invoke();
+        }
+
+        public static void Reset()
+        {
+            index2 = 1;
+            currentGamme.Reset();
         }
     }
 }

@@ -6,37 +6,44 @@
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:local="clr-namespace:STNMI"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
         mc:Ignorable="d"
         Title="Score Transcriber For Non Midi Instruments" Height="700" Width="1200" WindowStartupLocation="CenterScreen"  
         ui:WindowHelper.UseModernWindowStyle="True">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" Background="#0d888888">
+    <DockPanel >
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Fichier" Background="Transparent" >
-                <MenuItem Header="_Nouveau" />
-                <MenuItem Header="_Ouvrir" />
                 <MenuItem Header="_Enregistrer" Click="Save_Click" />
                 <Separator />
                 <MenuItem Header="_Quitter" Click="Exit_Click" />
             </MenuItem>
+            <MenuItem Header="_Edition" Background="Transparent">
+                <MenuItem Header="_Paramètres" Click="Settings_Click" />
+            </MenuItem>
+            <MenuItem Header="_Aide" Background="Transparent">
+                <MenuItem Header="_Mises à jour" Click="Update_Click" />
+                <Separator />
+                <MenuItem Header="_A propos" Click="About_Click" />
+            </MenuItem>
         </Menu>
-        <Grid DockPanel.Dock="Top" Background="#12888888" >
+        <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Button Margin="5" ui:ControlHelper.CornerRadius="100" Name="Start" Click="Button_Click_2" Height="42" Width="42" FontSize="19" Background="Transparent" Padding="0">
-                    <Image Source="recording.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                <Button Margin="5" ui:ControlHelper.CornerRadius="50" Name="Start" Click="Button_Click_2" Height="42" Width="42" FontSize="19" Padding="0">
+                    <fa:FontAwesomeIcon SolidIcon="Circle" Margin="5" />
                 </Button>
-                <Button Margin="5" ui:ControlHelper.CornerRadius="100"  Name="Pause" Click="Button_Click_4"  Height="42" Width="42" FontSize="19" Background="Transparent" Padding="0">
-                    <Image Source="pause.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                <Button Margin="5" ui:ControlHelper.CornerRadius="100"  Name="Pause" Click="Button_Click_4"  Height="42" Width="42" FontSize="19" Padding="0">
+                    <fa:FontAwesomeIcon SolidIcon="Pause" Margin="5" />
                 </Button>
-                <Button  Margin="5" ui:ControlHelper.CornerRadius="100" IsEnabled="False" Name="Stop" Click="Button_Click_3" HorizontalAlignment="Left" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" Background="Transparent" Padding="0" >
-                    <Image Source="stop.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                <Button  Margin="5" ui:ControlHelper.CornerRadius="100" IsEnabled="False" Name="Stop" Click="Button_Click_3" HorizontalAlignment="Left" VerticalAlignment="Top" Height="42" Width="42" FontSize="19" Padding="0" >
+                    <fa:FontAwesomeIcon SolidIcon="Square" Margin="5" />
                 </Button>
-                <Button Margin="5" ui:ControlHelper.CornerRadius="100" x:Name="PlayMIDI" Click="PlayMIDI_Click" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="42" Width="42" FontSize="19"  Background="Transparent" Padding="0">
-                    <Image Source="play.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                <Button Margin="5" ui:ControlHelper.CornerRadius="100" x:Name="PlayMIDI" Click="PlayMIDI_Click" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="42" Width="42" FontSize="19" Padding="0">
+                    <fa:FontAwesomeIcon SolidIcon="Play" Margin="5" />
                 </Button>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -48,15 +55,20 @@
                 <ComboBox x:Name="midiSorts" FontSize="14"  Margin="15,0" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
             </StackPanel>
         </Grid>
-        <Grid Background="#19888888">
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="True" Grid.Row="0" Margin="10" >
-            <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
-                <Label DockPanel.Dock="Top" Grid.Row="5" Content="Réglages" HorizontalContentAlignment="Center" FontSize="20"/>
-                    <Grid HorizontalAlignment="Stretch" Width="Auto">
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Réglages" HorizontalContentAlignment="Center" FontSize="20"/>
+                        <Button Background="Transparent" Margin="5" Click="ReglagesButton_Click">
+                            <fa:FontAwesomeIcon Name="IconeAngle" SolidIcon="AngleDown" />
+                        </Button>
+                    </StackPanel>
+                    <Grid HorizontalAlignment="Stretch" Width="Auto" Name="Reglages" Height="300">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
@@ -69,8 +81,8 @@
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="50"/>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Content="Auteur" VerticalAlignment="Center" FontSize="20"/>
-                        <Label Grid.Row="1" Content="Titre" VerticalAlignment="Center" FontSize="20"  />
+                        <Label Grid.Row="0" Content="Titre" VerticalAlignment="Center" FontSize="20"/>
+                        <Label Grid.Row="1" Content="Auteur" VerticalAlignment="Center" FontSize="20"  />
                         <Label Grid.Row="2" Content="Instrument" VerticalAlignment="Center" FontSize="20" />
                         <Label Grid.Row="3" Content="Gamme" VerticalAlignment="Center" FontSize="20" />
                         <Label Grid.Row="4" Content="Tempo" VerticalAlignment="Center" FontSize="20" />
@@ -80,20 +92,23 @@
                         <TextBox HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1"   Name="auteur" Text="Auteur" FontSize="16" VerticalAlignment="Center" Margin="20,0" Height="35" VerticalContentAlignment="Center"/>
                         <ComboBox HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="1" Name="instrums" FontSize="16" VerticalAlignment="Center" Margin="20,0" Height="35" VerticalContentAlignment="Center"/>
                         <ComboBox HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="1" x:Name="gamms" FontSize="16" VerticalAlignment="Center" Margin="20,0" Height="35" VerticalContentAlignment="Center"/>
-                        <ui:NumberBox HorizontalAlignment="Stretch" SpinButtonPlacementMode="Compact" Grid.Row="4" Grid.Column="1" Name="tempo" Text="120" FontSize="16" VerticalAlignment="Center" Margin="20,0" Height="35" VerticalContentAlignment="Center"/>
+                        <ui:NumberBox HorizontalAlignment="Stretch" Name="tempo" SpinButtonPlacementMode="Compact" Grid.Row="4" Grid.Column="1" Text="120" FontSize="16" VerticalAlignment="Center" Margin="20,0" Height="35" VerticalContentAlignment="Center"/>
                         <ComboBox HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="1" x:Name="rythm" FontSize="16" VerticalAlignment="Center" Margin="20,0" Height="35" VerticalContentAlignment="Center"/>
                     </Grid>
                     <Label Content="Aperçu ABC" HorizontalContentAlignment="Center" FontSize="20"/>
-            </StackPanel>
-            <TextBox DockPanel.Dock="Bottom" Name="entry" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-        </DockPanel>
+                </StackPanel>
+                <Grid>
+                    <TextBox DockPanel.Dock="Bottom" Name="entry" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                </Grid>
+            </DockPanel>
         <DockPanel LastChildFill="True" Grid.Column="1" Margin="10">
             <Label DockPanel.Dock="Top" Grid.Row="5" Content="Partition" HorizontalContentAlignment="Center" FontSize="20"/>
-
-            <ScrollViewer Background="White" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <svgc:SvgViewbox Name="img" HorizontalAlignment="Stretch" VerticalAlignment="Top" Stretch="Uniform" Margin="10"/>
-        </ScrollViewer>
-        </DockPanel>
+                <ui:ThemeShadowChrome>
+                    <ScrollViewer Background="White" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <svgc:SvgViewbox Name="img" HorizontalAlignment="Stretch" VerticalAlignment="Top" Stretch="Uniform" Margin="10"/>
+                     </ScrollViewer>
+                </ui:ThemeShadowChrome>
+            </DockPanel>
     </Grid>
     </DockPanel>
 </Window>

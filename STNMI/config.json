@@ -1,0 +1,19 @@
+﻿{
+  "Theme": 0,
+  "DefaultInstrument": 0,
+  "Language":  0,
+  "ReglagesEnabled": true,
+  "Author": "STNMI",
+  "AutoUpdates": true,
+  "AutoDetectGamme": true,
+  "AutoDetectModulation": false,
+  "AutoDetectLength": true,
+  "NoiseReducer": true,
+  "TempFolder": "[Default]",
+  "UsesAsio": false,
+  "AsioDriver": 0,
+  "defaultIn": 0,
+  "MidiOut": 0,
+  "VolumeIn": 100,
+  "VolumeOut": 100
+}

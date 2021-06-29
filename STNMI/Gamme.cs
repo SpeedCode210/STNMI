@@ -24,6 +24,11 @@ namespace STNMI
             return str;
         }
 
+        public virtual void Reset()
+        {
+            return;
+        }
+
         public override string ToString()
         {
             return this.Name;

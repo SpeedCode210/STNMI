@@ -1,0 +1,31 @@
+﻿<ScrollViewer x:Class="STNMI.UpdateSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:local="clr-namespace:STNMI"
+        mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="45"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" Content="Version Actuelle" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label Grid.Column="1" Grid.Row="0" Content="STNMI" FontSize="18" Name="CurrentVersion" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="Rechercher les mises à jour au démarrage" FontSize="20" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+        <ui:ToggleSwitch Grid.Column="1" Grid.Row="1" Name="AutoUpdates" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <Label Grid.Column="0" Grid.Row="2"  Content="Vérifier les mises à jour" FontSize="20" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="1" Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right">
+            <ui:ProgressRing IsActive="False" Name="RechercheEnCours" Margin="5"/>
+            <Button Content="Rechercher maintenant" Name="SearchUpdates" VerticalAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</ScrollViewer>

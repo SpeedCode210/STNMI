@@ -2,11 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net5.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>STNMI.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>0.0.8</Version>
+    <Company>STNMI</Company>
+    <Authors>Raouf OULD ALI</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,8 +23,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="eclipium.ico" />
-    <None Remove="EclipiumLogoFluentWithText.png" />
     <None Remove="pause.png" />
     <None Remove="play.png" />
     <None Remove="recording.png" />
@@ -30,18 +31,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="EclipiumLogoFluentWithText.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Melanchall.DryWetMidi" Version="5.2.0" />
+    <PackageReference Include="Melanchall.DryWetMidi" Version="5.2.1" />
+    <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
     <PackageReference Include="ModernWpfUI" Version="0.9.4" />
-    <PackageReference Include="NAudio" Version="2.0.0" />
-    <PackageReference Include="SharpVectors" Version="1.7.1" />
+    <PackageReference Include="NAudio" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SharpVectors" Version="1.7.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="eclipium.ico" />
     <Resource Include="pause.png" />
     <Resource Include="play.png" />
     <Resource Include="recording.png" />
@@ -50,11 +48,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="abc2midi.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="abcm2ps.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Inkscape\AUTHORS">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -562,6 +571,10 @@
     </None>
     <None Update="Inkscape\TRANSLATORS">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

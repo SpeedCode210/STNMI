@@ -13,6 +13,9 @@ namespace Guitar_Tuner
 
         public bool isActive = true;
         BufferedWaveProvider bufferedWaveProvider = null;
+        WaveInEvent waveIn = new WaveInEvent();
+        IWaveProvider stream;
+        Pitch pitch;
 
         public static List<string> GetDevices()
         {
@@ -26,7 +29,7 @@ namespace Guitar_Tuner
 
         public void StartDetect(int inputDevice, ref Thread th)
         {
-            using WaveInEvent waveIn = new WaveInEvent();
+            waveIn = new WaveInEvent();
 
             waveIn.DeviceNumber = inputDevice;
             waveIn.WaveFormat = new WaveFormat(44100, 1);
@@ -36,68 +39,106 @@ namespace Guitar_Tuner
             // begin record
             waveIn.StartRecording();
 
-            IWaveProvider stream = new Wave16ToFloatProvider(bufferedWaveProvider);
-            Pitch pitch = new Pitch(stream);
-
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-
-            Console.WriteLine("Play or sing a note! Press ESC to exit at any time. \n");
-            var a = "";
-            var b = 0;
-            do
-            {
-                bytesRead = stream.Read(buffer, 0, buffer.Length);
-
-                float freq = pitch.Get(buffer);
-
-                if (freq != 0 && ScoreData.currentInstrument.TestFreq(freq))
-                {
-                    Debug.WriteLine(freq + " | " + freq * ScoreData.currentInstrument.Coeff);
-                    var c = Converter.Convert(freq * ScoreData.currentInstrument.Coeff);
-                    if (c == a)
-                        b++;
-                    else
-                    {
-                        if (b > 0)
-                        {
-                            try
-                            {
-                                var d = Converter.ConvertBase(freq * ScoreData.currentInstrument.Coeff);
-                                GammeAutomatique.NbNotes[d]++;
-                            }
-                            catch (KeyNotFoundException e)
-                            {
-                                Debug.WriteLine(e); 
-                            }
-                            ScoreData.Write(a);
-                            b = 0;
-                            a = c;
-
-                        }
-                        else
-                        {
-                            b++;
-                        }
-
-                    }
-                }
-
-            } while (bytesRead != 0 && isActive);
-
-            // stop recording
-            waveIn.StopRecording();
-            waveIn.Dispose();
+            stream = new Wave16ToFloatProvider(bufferedWaveProvider);
+            pitch = new Pitch(stream);
 
         }
 
-        void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
+        string a = "";
+        int b = 0;
+        long milliseconds;
+
+        private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            if (bufferedWaveProvider != null)
+
+            if (bufferedWaveProvider == null) return;
+
+            bufferedWaveProvider.AddSamples(e.Buffer, 0, e.BytesRecorded);
+            bufferedWaveProvider.DiscardOnBufferOverflow = true;
+
+            if (!isActive)
             {
-                bufferedWaveProvider.AddSamples(e.Buffer, 0, e.BytesRecorded);
-                bufferedWaveProvider.DiscardOnBufferOverflow = true;
+                try 
+                {
+                waveIn.StopRecording();
+                waveIn.Dispose();
+                waveIn.DataAvailable -= WaveIn_DataAvailable;
+                }
+                catch(Exception err)
+                {
+                    Debug.WriteLine(err);
+                }
+                        
+                a = "";
+                b = 0;
+                milliseconds = 0;
+                return;
             }
+
+            byte[] buffer = new byte[8192];
+            stream.Read(buffer, 0, buffer.Length);
+
+            float freq = pitch.Get(buffer);
+            if (freq==0)
+            {
+                var c = " z";
+                if (c == a)
+                    b++;
+                else
+                {
+                    if (b > 0)
+                    {
+                        int temps = NoteTimeDetector.Detect(milliseconds,DateTimeOffset.Now.ToUnixTimeMilliseconds());
+                        if((!String.IsNullOrEmpty(a)) && temps > 0 )
+                            ScoreData.Write(a + temps);
+                        milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                        b = 0;
+                        a = c;
+                    }
+                    else
+                    {
+                        b++;
+                    }
+
+                }
+            }
+            else
+            if (freq != 0 && ScoreData.currentInstrument.TestFreq(freq))
+            {
+                Debug.WriteLine(freq + " | " + freq * ScoreData.currentInstrument.Coeff);
+                var c = Converter.Convert(freq * ScoreData.currentInstrument.Coeff);
+                if (c == a)
+                    b++;
+                else
+                {
+                    if (b > 0)
+                    {
+
+                        int temps = NoteTimeDetector.Detect(milliseconds, DateTimeOffset.Now.ToUnixTimeMilliseconds());
+                        try
+                        {
+                            var d = Converter.ConvertBase(freq * ScoreData.currentInstrument.Coeff);
+                            GammeAutomatique.NbNotes[d]++;
+                        }
+                        catch (KeyNotFoundException err)
+                        {
+                            Debug.WriteLine(err);
+                        }
+                        if ((!String.IsNullOrEmpty(a)) && temps > 0)
+                            ScoreData.Write(a + temps);
+                        b = 0;
+                        a = c;
+                        milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+                    }
+                    else
+                    {
+                        b++;
+                    }
+
+                }
+            }
+
         }
 
 

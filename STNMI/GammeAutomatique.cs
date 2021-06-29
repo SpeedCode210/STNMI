@@ -134,5 +134,42 @@ namespace STNMI
             Notes = Gammes.gammes[(int)g].Notes;
             Debug.WriteLine(Key);
         }
+
+        public override void Reset()
+        {
+            Notes = new()
+            {
+                { "a", "C" },
+                { "b", "^C" },
+                { "c", "D" },
+                { "d", "_E" },
+                { "e", "E" },
+                { "f", "F" },
+                { "g", "^F" },
+                { "h", "G" },
+                { "i", "^G" },
+                { "j", "A" },
+                { "k", "_B" },
+                { "l", "B" }
+            };
+
+            Key = "C";
+
+            NbNotes = new Dictionary<string, double>()
+        {
+                { "a", 0 },
+                { "b", 0 },
+                { "c", 0 },
+                { "d", 0 },
+                { "e", 0 },
+                { "f", 0 },
+                { "g", 0 },
+                { "h", 0 },
+                { "i", 0 },
+                { "j", 0 },
+                { "k", 0 },
+                { "l", 0 }
+        };
+        }
     }
 }
