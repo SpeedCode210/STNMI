@@ -53,6 +53,11 @@
                     </Hyperlink>
                       used to work with MIDI files and MIDI devices (developed/maintained by Maxim Dobroselsky)
                     <LineBreak/><LineBreak/>
+                    <Hyperlink NavigateUri="https://github.com/Kinnara/ModernWpf" FontWeight="DemiBold" RequestNavigate="Hyperlink_RequestNavigate">
+                        ModernWPF
+                    </Hyperlink>
+                      For making this modern interface (developed/maintained by Yimeng Wu)
+                    <LineBreak/><LineBreak/>
                 </TextBlock>
             </ScrollViewer>
         </DockPanel>

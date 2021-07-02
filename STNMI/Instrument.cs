@@ -9,7 +9,7 @@
         public int MinFreq { get; private set; }
         public int MaxFreq { get; private set; }
 
-        public Instrument(string name, double coeff,int midi,string clef = "treble",int min = 0, int max = 10000)
+        public Instrument(string name, double coeff,int midi,string clef = "treble",int min = 20, int max = 10000)
         {
             Name = name;
             Coeff = coeff;

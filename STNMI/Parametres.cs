@@ -30,6 +30,7 @@ namespace STNMI
         public bool NoiseReducer = true;
         public string TempFolder = "[Default]";
         public bool UsesAsio = false;
+        public int AsioDriver = 0;
         public int defaultIn = 0;
         public int MidiOut = 0;
         public int VolumeIn = 100;

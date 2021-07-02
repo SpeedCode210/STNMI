@@ -35,10 +35,14 @@ namespace STNMI
             gamms.SelectedIndex = 0;
             gamms.SelectionChanged += Gamms_SelectionChanged;
             micro.ItemsSource = Sound.GetDevices();
-            micro.SelectedIndex = 0;
-            midiSorts.ItemsSource = OutputDevice.GetAll();
-            midiSorts.SelectionChanged += MidiSorts_SelectionChanged;
-            midiSorts.SelectedIndex = 0;
+            try
+            {
+                micro.SelectedIndex = Parametres.Default.defaultIn;
+            }
+            catch
+            {
+                micro.SelectedIndex = 0;
+            }
             auteur.TextChanged += Auteur_TextChanged;
             titre.TextChanged += Titre_TextChanged;
             tempo.ValueChanged += Tempo_ValueChanged;
@@ -56,6 +60,7 @@ namespace STNMI
                 Reglages.Height = 0;
             }
             auteur.Text = Parametres.Default.Author;
+            ScoreData.outputDevice = OutputDevice.GetById(Parametres.Default.MidiOut);
         }
 
         private void Tempo_ValueChanged(ModernWpf.Controls.NumberBox sender, ModernWpf.Controls.NumberBoxValueChangedEventArgs args)
@@ -80,12 +85,6 @@ namespace STNMI
         {
             sound.isActive = false;
             System.Windows.Application.Current.Shutdown();
-        }
-
-        private void MidiSorts_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            ScoreData.currentMIDIDevice = midiSorts.SelectedIndex;
-            ScoreData.outputDevice = OutputDevice.GetById(ScoreData.currentMIDIDevice);
         }
 
         private void Gamms_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
