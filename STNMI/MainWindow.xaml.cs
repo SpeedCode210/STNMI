@@ -46,6 +46,8 @@ namespace STNMI
             auteur.TextChanged += Auteur_TextChanged;
             titre.TextChanged += Titre_TextChanged;
             tempo.ValueChanged += Tempo_ValueChanged;
+            rythm1.ValueChanged += Rythm1_ValueChanged;
+            rythm2.SelectionChanged += Rythm2_SelectionChanged;
             try
             {
                 Directory.CreateDirectory(Path.GetTempPath()+"STNMI");
@@ -61,6 +63,16 @@ namespace STNMI
             }
             auteur.Text = Parametres.Default.Author;
             ScoreData.outputDevice = OutputDevice.GetById(Parametres.Default.MidiOut);
+        }
+
+        private void Rythm2_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ScoreData.meter = rythm1.Value + "/" + Math.Pow(2, rythm2.SelectedIndex);
+        }
+
+        private void Rythm1_ValueChanged(ModernWpf.Controls.NumberBox sender, ModernWpf.Controls.NumberBoxValueChangedEventArgs args)
+        {
+            ScoreData.meter = rythm1.Value + "/" + rythm2.Text;
         }
 
         private void Tempo_ValueChanged(ModernWpf.Controls.NumberBox sender, ModernWpf.Controls.NumberBoxValueChangedEventArgs args)
@@ -187,6 +199,8 @@ namespace STNMI
             var th2 = new Thread(() =>
             {
                 var midiFile = MidiFile.Read(wavFile);
+                ScoreData.outputDevice.Volume = new Volume((ushort)(ushort.MaxValue*Parametres.Default.VolumeOut/200));
+                Debug.WriteLine(Parametres.Default.VolumeOut);
                 midiFile.Play(ScoreData.outputDevice);
             });
             th2.Start();
@@ -208,14 +222,11 @@ namespace STNMI
 
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            // Displays a SaveFileDialog so the user can save the Image
-            // assigned to Button2.
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "PDF Document|*.pdf|PNG Image|*.png|MIDI|*.mid|ABC Music Notation|*.abc";
             saveFileDialog1.Title = "Enregister sous";
             saveFileDialog1.ShowDialog();
 
-            // If the file name is not an empty string open it for saving.
             if (saveFileDialog1.FileName != "")
             {
                 switch (saveFileDialog1.FilterIndex)

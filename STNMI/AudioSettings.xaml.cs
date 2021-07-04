@@ -46,6 +46,14 @@ namespace STNMI
             AudioOut.ItemsSource = OutputDevice.GetAll();
             AudioOut.SelectedIndex = Parametres.Default.MidiOut;
             AudioOut.SelectionChanged += AudioOut_SelectionChanged;
+            VolumeOut.Value = Parametres.Default.VolumeOut;
+            VolumeOut.ValueChanged += VolumeOut_ValueChanged;
+        }
+
+        private void VolumeOut_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Parametres.Default.VolumeOut = (int)VolumeOut.Value;
+            Parametres.Save();
         }
 
         private void AudioOut_SelectionChanged(object sender, SelectionChangedEventArgs e)

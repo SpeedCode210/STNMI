@@ -10,7 +10,7 @@
         public Autocorrelator(int sampleRate)
         {
             this.sampleRate = (float)sampleRate;
-            int minFreq = 20;
+            int minFreq = 30;
             int maxFreq = 8136;
 
             this.maxOffset = sampleRate / minFreq;

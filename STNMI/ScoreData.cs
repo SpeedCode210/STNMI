@@ -16,7 +16,7 @@ namespace STNMI
         public static string auteur = "Auteur";
         public static string titre = "Titre";
 
-        public static string enTete = "X:1\nT: Titre\nC:Auteur\nL:1/32\nK:C clef=treble\n%%MIDI program 1 n\n";
+        public static string enTete = "X:1\nT: Titre\nC:Auteur\nL:1/32\nK:C clef=treble\nM:4/4\n%%MIDI program 1 n\n";
         public static Instrument[] instruments = new Instrument[]
         {
             new("Piano",1,1,"treble",26,4200),
@@ -63,11 +63,14 @@ namespace STNMI
 
         public static OutputDevice outputDevice;
 
+        public static string meter = "4/4";
+
         public static void ReloadEnTete()
         {
             enTete = "X:1\nT: " + titre
                 + "\nC:" + auteur 
                 + "\nL:1/16"
+                + "\nM:" + meter
                 + "\nK:" + currentGamme.Key
                 + "\nQ:" + tempo
                 + "\n%%MIDI program " + currentInstrument.MIDI

@@ -81,6 +81,7 @@ namespace Guitar_Tuner
             float freq = pitch.Get(buffer);
             if (freq==0)
             {
+                if (a == "") return;
                 var c = " z";
                 if (c == a)
                     b++;
